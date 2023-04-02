@@ -27,6 +27,17 @@ print("""\
 my_lat = 33.933380
 my_lng = -78.030724
 
+print("Welcome to the International Space Station (ISS) Spotter App!\n")
+
+#choosing hard-coded values:
+parents = input("Are you Shirley? Enter Y or N: ")
+
+if parents != 'Y':
+  print(f"You can find your latitude and longitude here: \n https://www.latlong.net/\nThen, paste it in here - don't forget to include any minuses.\n")
+  ask_lat = float(input("What is your latitude? "))
+  ask_lng = float(input("What is your longitude? "))
+
+
 def iss_is_above():
   #get ISS location
   ISS_response = requests.get(url="http://api.open-notify.org/iss-now.json")
@@ -41,10 +52,11 @@ def iss_is_above():
   #create a tuple with latitude and longitude:
   #iss_position = (latitude, longitude)
   #check if the ISS latitude and longitude are within +/-5 of your hard-coded location:
-  if my_lat-5 <= latitude <= my_lat+5 and my_lng-5 <= longitude <= my_lng+5:
-    print("The International Space Station is above!")
+  if (parents == 'Y' and (my_lat-5 <= latitude <= my_lat+5 and my_lng-5 <= longitude <= my_lng+5)) or (parents != 'Y' and (ask_lat-5 <= latitude <= ask_lat+5 and ask_lng-5 <= longitude <= ask_lng+5)):
+    print("The ISS is in the sky above you!")
   else:
-    print("The International Space Station is somewhere else in the world right now.")
+    print("It's not above you right now - the ISS has other places to be. Check back in later!")
+    
 
 def its_dark_outside ():
   #request the sunrise and sunset times, in UTC, for your hard-coded location:
@@ -57,16 +69,17 @@ def its_dark_outside ():
   sunset = int(my_loc["results"]["sunset"].split("T")[1].split(":")[0])
   #get current UTC time, converted to an hour to make it comparable to our hours above.
   time_now = datetime.now().hour
-  if time_now >= sunset and time_now <= sunrise:
-    print("It's dark enough to be able to see the International Space Station.")
+  if time_now >= sunset or time_now <= sunrise:
+    print("\nIt's dark enough to be able to see the International Space Station.")
   else:
-    print("It's not dark enough to see the International Space Station.")
+    print("\nIt's not dark enough to see the International Space Station.")
 
-iss_is_above()
 its_dark_outside()
+iss_is_above()
+
 
 #not adding emailing functionality.
-  
+print("\nThanks for visiting! I'll add some notification function at a later time.")
 
 #reminders on response codes:
 #response codes tell us if the request succeeded or not. 404... doesn't exist!
